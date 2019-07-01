@@ -1,9 +1,16 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const token = 'NTk0MjE0MjE3NTQwNjk4MTI3.XRnhcg.jBPGXCsId9fQz-sVrog_EWlvryo';
-const ytdl = require('ytdl-core');
+bot.music = require("discord.js-musicbot-addon");
+
+// Now we start the music module.
+bot.music.start(bot, {
+  // Set the api key used for YouTube.
+  // This is required to run the bot.
+  youtubeKey: "AIzaSyCPaImHND8JgP_k_O8nJ1jl2mz6cJ2K7cw"
+
+});
 const prefix = ';';
-var queue = [];
 
 //list of maps for choosing best of
 var maps = [
@@ -26,20 +33,6 @@ function shuffle(a) {
     return a;
 }
 
-// check if the bot can join a voice channel
-function checkVoice(msg) {
-    const voiceChannel = msg.member.voiceChannel;
-    if (!voiceChannel) {
-        msg.channel.send('You need to be in a voice channel to play music!');
-        return false
-    }
-    const permissions = voiceChannel.permissionsFor(msg.client.user);
-    if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-        msg.channel.send('I need the permissions to join and speak in your voice channel!');
-        return false
-    }
-    return true
-}
 
 // return a random map
 function pickmaps(amount) {
@@ -62,19 +55,6 @@ bot.on('ready', () => {
 // message hook function
 bot.on('message', msg => {
     if (msg.author.bot) return;
-
-    //music controls
-    if (msg.content.startsWith(';play ')) {
-        execute(msg);
-        return;
-    } else if (msg.content.startsWith(';skip')) {
-        skip(msg);
-        return;
-    } else if (msg.content.startsWith(';stop')) {
-        stop(msg);
-        return;
-    }
-
 
     //'best of' map selection
     if (/^;bo[0-9]*$/.test(msg.content)) {
@@ -104,55 +84,5 @@ bot.on('message', msg => {
 
 });
 
-
-async function execute(msg) {
-    console.log('Execute');
-    const args = msg.content.split(' ');
-
-    const voiceChannel = msg.member.voiceChannel;
-    if (!checkVoice(msg)) {
-        return;
-    }
-
-    const songInfo = await ytdl.getInfo(args[1]);
-    queue.push(songInfo.video_url);
-    msg.channel.send('playing ' + song.title);
-    play(msg.member.voiceChannel);
-
-}
-
-function skip(msg, serverQueue) {
-    if (!msg.member.voiceChannel) return msg.channel.send('You have to be in a voice channel to stop the music!');
-    if (queue === undefined || queue.length == 0) {
-        console.log('no music left');
-        return;
-    }
-    serverQueue.connection.dispatcher.end();
-    play(msg.member.voiceChannel)
-}
-
-function stop(msg) {
-    if (!msg.member.voiceChannel) return msg.channel.send('You have to be in a voice channel to stop the music!');
-    queue = [];
-    serverQueue.connection.dispatcher.end();
-}
-
-function play(voiceChannel) {
-    if (queue === undefined || queue.length == 0) {
-        console.log('no music left')
-    }
-    var songurl = queue.pop();
-    var connection = await voiceChannel.join();
-
-    const dispatcher = connection.playStream(ytdl(songurl))
-        .on('end', () => {
-            console.log('Music ended!');
-            play(voiceChannel);
-        })
-        .on('error', error => {
-            console.error(error);
-        });
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-}
 
 bot.login(token);

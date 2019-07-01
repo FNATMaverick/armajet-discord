@@ -10,7 +10,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "opusscript": "0.0.6",
-    "ytdl-core": "^0.29.2"
+    "discord.js-musicbot-addon": "^13.6.0",
+    "opusscript": "0.0.6"
   }
 }
