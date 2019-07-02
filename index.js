@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
-const token = 'NTk0MjE0MjE3NTQwNjk4MTI3.XRnhcg.jBPGXCsId9fQz-sVrog_EWlvryo';
+const token = 'NTk0MjE0MjE3NTQwNjk4MTI3.XRvYGw.qIF4oq_cRTZ3r8XCPQEh3qmyXzU';
 bot.music = require("discord.js-musicbot-addon");
 
 // Now we start the music module.
