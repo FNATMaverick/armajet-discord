@@ -10,7 +10,7 @@ bot.music.start(bot, {
   youtubeKey: "AIzaSyCPaImHND8JgP_k_O8nJ1jl2mz6cJ2K7cw"
 
 });
-const prefix = ';';
+const prefix = '!';
 
 //list of maps for choosing best of
 var maps = [
